@@ -18,6 +18,8 @@ app.use(cookieParser());
 const adminRoutes = require("./src/routes/adminRoutes");
 app.use("/admin", adminRoutes);
 
+app.use('/api/appointments', require('./routes/appointmentRoutes'));
+app.use('/api/vendors', require('./routes/vendorRoutes'));
 
 
 app.listen(5000, () => {
