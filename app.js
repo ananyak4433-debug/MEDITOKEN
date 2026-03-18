@@ -5,7 +5,7 @@ const app = express();
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const jwt=require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const connectDB = require("./src/config/db");
 connectDB();
@@ -20,7 +20,8 @@ app.use("/admin", adminRoutes);
 
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
 app.use('/api/vendors', require('./routes/vendorRoutes'));
-
+const patientRoutes = require("./src/routes/patientRoutes");
+app.use("/api", patientRoutes);
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");
