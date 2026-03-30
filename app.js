@@ -16,11 +16,15 @@ app.use(cookieParser());
 
 
 const adminRoutes = require("./src/routes/adminRoutes");
+const doctorRoutes = require("./src/router/doctorRoutes.js");
+const staffRoutes = require("./src/router/staffRoutes.js");
 app.use("/admin", adminRoutes);
 
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
 app.use('/api/vendors', require('./routes/vendorRoutes'));
 const patientRoutes = require("./src/routes/patientRoutes");
+app.use("/api/doctors", doctorRoutes);
+app.use("/api/staff", staffRoutes);
 app.use("/api", patientRoutes);
 
 app.listen(5000, () => {
