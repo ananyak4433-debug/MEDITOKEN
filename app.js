@@ -20,6 +20,7 @@ const doctorRoutes = require("./src/routes/doctorRoutes.js");
 const staffRoutes = require("./src/routes/staffRoutes.js");
 app.use("/api", adminRoutes);
 
+app.use("/api/staff-slots",require("./src/routes/staffSlotRoutes"));
 app.use('/api/appointments', require('./src/routes/appointmentRoutes'));
 app.use('/api/vendors', require('./src/routes/vendorRoutes'));
 const patientRoutes = require("./src/routes/patientRoutes");
