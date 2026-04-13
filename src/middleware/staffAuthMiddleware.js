@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Staff = require("../models/staffModel");
 
-const Protect = async (req, res, next) => {
+const staffProtect = async (req, res, next) => {
   const token = req.cookies.staffToken;
 
   if (!token) {
@@ -24,4 +24,4 @@ const Protect = async (req, res, next) => {
   }
 };
 
-module.exports = Protect;
+module.exports = staffProtect;

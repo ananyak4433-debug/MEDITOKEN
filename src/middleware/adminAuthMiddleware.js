@@ -19,7 +19,7 @@ const adminProtect = (req, res, next) => {
       });
     }
 
-    req.adminId = decoded.id;
+    req.user = decoded.id;
     next();
   } catch (error) {
     return res.status(401).json({

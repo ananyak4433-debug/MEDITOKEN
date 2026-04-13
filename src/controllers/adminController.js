@@ -88,7 +88,7 @@ exports.adminLogin = async (req, res) => {
 /* ================= ADMIN PROFILE ================= */
 exports.getAdminProfile = async (req, res) => {
     try {
-        const admin = await Admin.findById(req.adminId).select("-password");
+        const admin = await Admin.findById(req.user).select("-password");
 
         if (!admin) {
             return res.status(404).json({ message: "Admin not found" });
@@ -148,49 +148,6 @@ exports.getAdminDashboard = async (req, res) => {
 };
 
 
-/* ================= CREATE VENDORS ================= */
-exports.createVendor = async (req, res) => {
-    try {
-        const { vendorName, email, password, organisationName, address, registrationNumber, phone } = req.body;
-
-        if (!vendorName || !email || !password || !organisationName || !address || !phone) {
-            return res.status(400).json({
-                success: false,
-                message: "All Required Fields must be Provided"
-            })
-        }
-
-        const existingVendor = await Vendor.findOne({ email });
-        if (existingVendor) {
-            return res.status(404).json({
-                sucess: false,
-                message: "Vendor Already Exist"
-            })
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const vendor = await Vendor.create({
-            vendorName, email,
-            password: hashedPassword,
-            organisationName, address, registrationNumber, phone,
-            createdBy: req.adminId
-        });
-
-        res.status(400).json({
-            success: true,
-            message: "Vendor Created Successfully"
-        });
-    } catch (error) {
-        res.status(500).json({
-            status: false,
-            error: error.message
-        });
-    };
-};
-
-
-
 /* ================= GET ALL USERS ================= */
 exports.getAllUsers = async (req, res) => {
     try {
@@ -208,36 +165,6 @@ exports.getAllUsers = async (req, res) => {
 
 
 
-/* ================= GET ALL VENDORS ================= */
-exports.getAllVendors = async (req, res) => {
-    try {
-        const vendors = await Vendor.find().select("-password");
-
-        res.status(200).json({
-            success: true,
-            totalVendors: vendors.length,
-            vendors
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-
-/* ================= GET ALL STAFF ================= */
-exports.getAllStaffs = async (req, res) => {
-    try {
-        const staffs = await Staff.find().select("-password");
-
-        res.status(200).json({
-            success: true,
-            totalStaffs: staffs.length,
-            staffs
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 
 /* ================= GET USER BY ID ================= */
@@ -262,49 +189,10 @@ exports.getUserById = async (req, res) => {
 };
 
 
-/* ================= GET VENDOR BY ID ================= */
-exports.getVendorById = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const vendor = await Vendor.findById(id).select("-password");
-
-        if (!vendor) {
-            return res.status(404).json({ message: "Vendor not found" });
-        }
-
-        res.status(200).json({
-            success: true,
-            vendor
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 
 
-/* ================= GET STAFF BY ID ================= */
-exports.getStaffById = async (req, res) => {
-    try {
-        const { id } = req.params;
 
-        const staff = await Staff.findById(id).select("-password");
-
-        if (!staff) {
-            return res.status(404).json({ message: "staff not found" });
-        }
-
-        res.status(200).json({
-            success: true,
-            vendor
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 
 /* ================= DELETE USER ================= */
@@ -327,44 +215,9 @@ exports.deleteUser = async (req, res) => {
 };
 
 
-/* ================= DELETE VENDOR ================= */
-exports.deleteVendor = async (req, res) => {
-    try {
-        const vendorId = req.params.id;
-
-        const vendor = await Vendor.findByIdAndDelete(vendorId);
-        if (!vendor) {
-            return res.status(404).json({ message: "Vendor not found" });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Vendor deleted successfully"
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 
-/* ================= DELETE STAFF ================= */
-exports.deleteStaff = async (req, res) => {
-    try {
-        const staffId = req.params.id;
 
-        const staff = await Staff.findByIdAndDelete(staffId);
-        if (!staff) {
-            return res.status(404).json({ message: "Staff not found" });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Staff deleted successfully"
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 
 /* ================= ADMIN UPDATE USER ================= */
@@ -393,105 +246,6 @@ exports.adminUpdateUser = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
-
-/* ================= ADMIN UPDATE VENDOR ================= */
-exports.adminUpdateVendor = async (req, res) => {
-    try {
-        const { id } = req.params; // vendorId
-        const { vendorName, email, organisationName } = req.body;
-
-        const vendor = await Vendor.findByIdAndUpdate(
-            id,
-            { vendorName, email, organisationName },
-            { new: true, runValidators: true }
-        ).select("-password");
-
-        if (!vendor) {
-            return res.status(404).json({ message: "Vendor not found" });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Vendor updated by admin",
-            vendor
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-
-/* ================= ADMIN UPDATE STAFF ================= */
-exports.adminUpdateStaff = async (req, res) => {
-    try {
-        const { id } = req.params; // vendorId
-        const { staffName, email } = req.body;
-
-        const staff = await Staff.findByIdAndUpdate(
-            id,
-            { staffName, email },
-            { new: true, runValidators: true }
-        ).select("-password");
-
-        if (!staff) {
-            return res.status(404).json({ message: "Satff not found" });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: "Staff updated by admin",
-            vendor
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-
-/* ================= UPDATE VENDOR STATUS ================= */
-exports.updateVendorStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { status } = req.body;
-
-        // Validate status value
-        if (!["active", "inactive"].includes(status)) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid status value"
-            });
-        }
-
-        const vendor = await Vendor.findByIdAndUpdate(
-            id,
-            { status },
-            { new: true }
-        ).select("-password");
-
-        if (!vendor) {
-            return res.status(404).json({
-                success: false,
-                message: "Vendor not found"
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: `Vendor ${status} successfully`,
-            vendor
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
-    }
-};
-
 
 /* ================= GET ALL APPOINTMENTS (ADMIN - PAGINATED) ================= */
 exports.getAllAppointments = async (req, res) => {

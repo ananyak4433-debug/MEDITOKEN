@@ -17,11 +17,11 @@ const appointmentSchema = new mongoose.Schema(
         ref:"Staff",
         required:true
     },
-    slotId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Slot",
-        required:true
-    },
+    // slotId:{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref:"Slot",
+    //     required:true
+    // },
     tokenNumber:{
         type:Number,
         required:true

@@ -2,6 +2,22 @@
     const bcrypt = require("bcrypt");
     const jwt = require("jsonwebtoken");
 
+     /* ================= DOCTOR CREATE ================= */
+    
+        exports.createDoctor = async (req, res) => {
+    try {
+        const doctor = await Doctor.create({
+        ...req.body,
+        staffId: req.user._id,   // VERY IMPORTANT
+        });
+
+        res.status(201).json(doctor);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+    };
+
+
     /* ================= DOCTOR PROFILE ================= */
 
     // exports.getDoctorProfile = async (req, res) => {
@@ -44,27 +60,14 @@
     }
     };
 
-    /* ================= DOCTOR ALLGET ================= */
+
+    /* ================= DOCTOR ALL GET ================= */
 
     exports.getMyDoctors = async (req, res) => {
     const doctors = await Doctor.find({ staffId: req.user._id });
     res.json(doctors);
     };
 
-        /* ================= DOCTOR CREATE ================= */
-    
-        exports.createDoctor = async (req, res) => {
-    try {
-        const doctor = await Doctor.create({
-        ...req.body,
-        staffId: req.user._id,   // VERY IMPORTANT
-        });
-
-        res.status(201).json(doctor);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-    };
 
     /* ================= DOCTOR AVAILABILITY ================= */
 

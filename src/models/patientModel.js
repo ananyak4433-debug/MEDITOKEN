@@ -31,8 +31,9 @@ const patientSchema = new mongoose.Schema(
             default: "Other"
         },
 
-        dateOfBirth: {
-            type: Date
+        age: {
+            type: Number,
+            required:true
         },
 
         isActive: {
