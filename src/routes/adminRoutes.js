@@ -26,11 +26,11 @@ const adminProtect = require("../middleware/adminAuthMiddleware");
 const router = express.Router();
 
 /* ================= AUTH ================= */
-router.post("/signup", adminSignup);
-router.post("/login", adminLogin);
-router.get("/profile", adminProtect, getAdminProfile);
-router.get("/dashboard", adminProtect, getAdminDashboard);
-router.get("/appointments", adminProtect, getAllAppointments);
+router.post("/admin/signup",adminProtect, adminSignup);
+router.post("/admin/login",adminProtect, adminLogin);
+router.get("/admin/profile", adminProtect, getAdminProfile);
+router.get("/admin/dashboard", adminProtect, getAdminDashboard);
+router.get("/admin/appointments", adminProtect, getAllAppointments);
 
 /* ================= USERS ================= */
 router.get("/users", adminProtect, getAllUsers);
